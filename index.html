@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokcall Onboarding</title>
+    
+    <!-- Tailwind CSS para un diseño rápido y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js para el gráfico de puntuación -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Estilos personalizados con la paleta de Mercado Libre */
+        body {
+            background-color: #EDEDED;
+            font-family: 'Proxima Nova', -apple-system, 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+        }
+        .bg-meli-yellow { background-color: #FFF159; }
+        .bg-meli-blue { background-color: #3483FA; }
+        .text-meli-blue { color: #3483FA; }
+        .text-meli-dark { color: #333333; }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .feedback-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+        /* Estilo para las listas de feedback */
+        .feedback-list {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body class="text-meli-dark">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Encabezado -->
+        <header class="mb-8">
+            <div class="flex items-center mb-4">
+                <img src="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/logo__large_plus.png" alt="Logo Mercado Libre" class="h-8 mr-4">
+                <h1 class="text-3xl font-bold">Mokcall Onboarding</h1>
+            </div>
+            <div class="card bg-meli-yellow flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 id="advisor-name" class="text-xl font-semibold text-meli-dark"></h2>
+                    <p id="seller-info" class="text-gray-700"></p>
+                    <p id="call-duration" class="text-gray-700 mt-1"></p>
+                </div>
+                <div class="mt-4 md:mt-0 text-right">
+                    <p class="font-semibold text-meli-dark">Fecha de Evaluación:</p>
+                    <p id="evaluation-date" class="text-gray-700"></p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Puntuación Principal y Desglose -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Columna de Puntuación Principal -->
+            <div class="lg:col-span-1 card flex flex-col items-center justify-center">
+                <h3 class="text-xl font-semibold mb-4">Puntuación Final</h3>
+                <div class="w-64 h-64 relative">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+                 <p class="text-gray-500 mt-4 text-center">Resultado general de la evaluación cualitativa.</p>
+            </div>
+
+            <!-- Columna de Desglose por Categoría -->
+            <div id="score-breakdown" class="lg:col-span-2 card">
+                <h3 class="text-xl font-semibold mb-6">Desglose de Puntuación por Categoría</h3>
+                <!-- Las categorías se insertarán aquí con JavaScript -->
+            </div>
+        </main>
+
+        <!-- Sección de Feedback -->
+        <section class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Puntos Fuertes -->
+            <div class="card">
+                <div class="flex items-center mb-4">
+                     <svg class="feedback-icon text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M6.633 10.5l-1.822 1.822a2.25 2.25 0 000 3.182l1.822 1.822m0-7.244a2.25 2.25 0 010 3.182l-1.822 1.822a2.25 2.25 0 01-3.182 0l-1.822-1.822a2.25 2.25 0 010-3.182l1.822-1.822m7.244 0l1.822-1.822a2.25 2.25 0 000-3.182l-1.822-1.822a2.25 2.25 0 00-3.182 0l-1.822 1.822" /></svg>
+                    <h3 class="text-xl font-semibold text-green-600">Puntos Fuertes</h3>
+                </div>
+                <div id="strong-points" class="space-y-6">
+                    <!-- El feedback se insertará aquí -->
+                </div>
+            </div>
+
+            <!-- Puntos de Mejora -->
+            <div class="card">
+                 <div class="flex items-center mb-4">
+                     <svg class="feedback-icon text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311l.738-1.137a6.01 6.01 0 012.25-2.443m-3.75 3.58a12.064 12.064 0 00-4.5 0m3.75-3.58l-.738-1.137a6.01 6.01 0 00-2.25-2.443m9 12.062A12.06 12.06 0 0112 21a12.06 12.06 0 01-5.25-1.42m10.5 1.42a12.065 12.065 0 00-4.5 0m-3.75-2.311l-.738 1.137a6.01 6.01 0 00-2.25 2.443m3.75-3.58a12.064 12.064 0 01-4.5 0m3.75 3.58l.738 1.137a6.01 6.01 0 012.25 2.443M12 6.75a2.25 2.25 0 110 4.5 2.25 2.25 0 010-4.5z" /></svg>
+                    <h3 class="text-xl font-semibold text-yellow-600">Puntos de Mejora</h3>
+                </div>
+                <div id="improvement-points" class="space-y-6">
+                    <!-- El feedback se insertará aquí -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- DATOS DE LA EVALUACIÓN ---
+        // Extraídos del documento PDF para alimentar el dashboard.
+        const evaluationData = {
+            advisorName: "Hernan Santos Cabrera",
+            seller: "ROSARINOFERRETERIAS_149032484",
+            date: "19/07/2025",
+            callDuration: "40 min",
+            finalScore: 80,
+            categories: [
+                { name: "1. Preparación para la Reunión", score: 10, maxScore: 10, strongPoints: ["El asesor demostró conocimiento general del negocio del cliente, evidenciando dominio sobre anuncios, campañas activas y calidad de las publicaciones. Además, profundizó en la oferta de productos para complementar su análisis."], improvementPoints: [] },
+                { name: "2. Introducción", score: 5, maxScore: 5, strongPoints: ["Se presentó de manera cordial y explicó con claridad su función, así como el objetivo de las asesorías.", "Detalló el programa, su dinámica, la frecuencia de las reuniones y la duración estimada de la sesión.", "Indagó sobre la experiencia previa del seller en la plataforma y su interés en mejorar las ventas.", "Recolectó información clave sobre productos y desafíos actuales, formulando preguntas alineadas al VOC."], improvementPoints: [] },
+                { name: "3. Proceso de Calificación", score: 33, maxScore: 35, strongPoints: ["Mapeó al decision maker para comprender cómo se toman las decisiones estratégicas.", "Recomendó aumentar progresivamente el ACOS objetivo en función de la competencia.", "Explicó de manera clara las principales métricas de la plataforma.", "Realizó un buen mapeo de la calidad de los anuncios y sugirió la inclusión de clips.", "Recomendó aumentar el presupuesto al sugerido por la plataforma."], improvementPoints: ["No se indagó en detalle sobre el presupuesto disponible ni sobre los criterios de priorización.", "Hubiera sido recomendable mostrar el dashboard en tiempo real para hacer la interacción más dinámica.", "Se sugiere también recomendar la integración de items ads durante la llamada."] },
+                { name: "4. Tratamiento de Objeciones", score: 21, maxScore: 35, strongPoints: ["Mostró disposición a escuchar y empatía frente a las preocupaciones del cliente."], improvementPoints: ["No utilizó benchmarks, insights de la industria ni ejemplos comparativos para reforzar sus respuestas.", "La argumentación frente a dudas de rentabilidad fue limitada y poco persuasiva.", "Faltó preparación para anticipar posibles objeciones sobre inversión o resultados.", "Ante la objeción del cliente sobre la falta de presupuesto, el asesor respondió de manera rigida."] },
+                { name: "5. Cierre de la Reunión", score: 9, maxScore: 9, strongPoints: ["Buscó dar continuidad proponiendo un seguimiento posterior.", "Realizó un recapitulación general de los acuerdos."], improvementPoints: ["Al momento de agendar la próxima reunión, propuso una fecha en sábado, día en el que el cliente ya había indicado que no trabajaba."] },
+                { name: "6. General / Presencia / Explicación", score: 2, maxScore: 6, strongPoints: ["Mantuvo un tono cordial, un lenguaje positivo y respeto durante toda la llamada."], improvementPoints: ["No aplicó de manera efectiva la regla 80/20, ya que dominó gran parte de la conversación.", "Hubo debilidades en el control de la estructura de la reunión."] }
+            ]
+        };
+
+        // --- LÓGICA DEL DASHBOARD ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Poblar información general
+            document.getElementById('advisor-name').textContent = `Asesor: ${evaluationData.advisorName}`;
+            document.getElementById('seller-info').textContent = `Seller: ${evaluationData.seller}`;
+            document.getElementById('call-duration').textContent = `Duración de la llamada: ${evaluationData.callDuration}`;
+            document.getElementById('evaluation-date').textContent = evaluationData.date;
+
+            // Renderizar componentes
+            renderScoreChart(evaluationData.finalScore);
+            renderScoreBreakdown(evaluationData.categories);
+            renderFeedback(evaluationData.categories);
+        });
+
+        /**
+         * Renderiza el gráfico de puntuación final.
+         * @param {number} score - La puntuación final (0-100).
+         */
+        function renderScoreChart(score) {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            // AJUSTE: La nota es aprobatoria >= 85. Amarillo si es menor.
+            const scoreColor = score >= 85 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444';
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: [scoreColor, '#e0e0e0'],
+                        borderColor: ['#ffffff', '#ffffff'],
+                        borderWidth: 4,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '75%',
+                    plugins: {
+                        tooltip: { enabled: false },
+                        legend: { display: false }
+                    }
+                },
+                plugins: [{
+                    id: 'doughnutText',
+                    afterDraw(chart) {
+                        const { ctx, width, height } = chart;
+                        ctx.restore();
+                        const fontSize = (height / 100).toFixed(2);
+                        ctx.font = `bold ${fontSize}em sans-serif`;
+                        ctx.fillStyle = scoreColor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        const text = `${score}%`;
+                        const textX = width / 2;
+                        const textY = height / 1.1;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+
+        /**
+         * Renderiza el desglose de puntuaciones por categoría.
+         * @param {Array} categories - El array de categorías con sus puntuaciones.
+         */
+        function renderScoreBreakdown(categories) {
+            const container = document.getElementById('score-breakdown');
+            categories.forEach(cat => {
+                const percentage = (cat.score / cat.maxScore) * 100;
+                const scoreColor = percentage >= 85 ? 'bg-green-500' : percentage >= 60 ? 'bg-yellow-500' : 'bg-red-500';
+                
+                const categoryHTML = `
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="font-semibold">${cat.name}</p>
+                            <p class="text-sm text-gray-600">${cat.score} / ${cat.maxScore} Pts</p>
+                        </div>
+                        <div class="progress-bar-bg h-3 w-full">
+                            <div class="progress-bar ${scoreColor}" style="width: ${percentage}%;"></div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += categoryHTML;
+            });
+        }
+        
+        /**
+         * Renderiza las listas de puntos fuertes y de mejora agrupados por categoría.
+         * @param {Array} categories - El array de categorías con su feedback.
+         */
+        function renderFeedback(categories) {
+            const strongPointsContainer = document.getElementById('strong-points');
+            const improvementPointsContainer = document.getElementById('improvement-points');
+
+            // Limpiar contenedores antes de agregar nuevo contenido
+            strongPointsContainer.innerHTML = '';
+            improvementPointsContainer.innerHTML = '';
+
+            categories.forEach(cat => {
+                // Agrupar y añadir puntos fuertes
+                if (cat.strongPoints && cat.strongPoints.length > 0) {
+                    const pointsList = cat.strongPoints.map(point => `<li class="text-gray-700 text-sm">${point}</li>`).join('');
+                    const categoryBlock = `
+                        <div>
+                            <p class="font-bold text-sm text-meli-blue">${cat.name}</p>
+                            <ul class="feedback-list mt-1">${pointsList}</ul>
+                        </div>
+                    `;
+                    strongPointsContainer.innerHTML += categoryBlock;
+                }
+
+                // Agrupar y añadir puntos de mejora
+                if (cat.improvementPoints && cat.improvementPoints.length > 0) {
+                    const pointsList = cat.improvementPoints.map(point => `<li class="text-gray-700 text-sm">${point}</li>`).join('');
+                    const categoryBlock = `
+                        <div>
+                            <p class="font-bold text-sm text-meli-blue">${cat.name}</p>
+                            <ul class="feedback-list mt-1">${pointsList}</ul>
+                        </div>
+                    `;
+                    improvementPointsContainer.innerHTML += categoryBlock;
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
